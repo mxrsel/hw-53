@@ -1,35 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [tasks, setTasks] = useState([
+        { id: '1', text: 'Покормить кота' },
+        { id: '2', text: 'Вынести мусор' }
+    ]);
+    const [taskText, setTaskText] = useState('');
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTaskText(event.target.value);
+    };
+
+    const handleAddTask = () => {
+        if (!taskText.trim()) return;
+        const newTask = {
+            id: String(Date.now()), // Создаем уникальный ID на основе времени
+            text: taskText
+        };
+        setTasks([...tasks, newTask]);
+        setTaskText('');
+    };
+
+    const handleDeleteTask = (taskId: string) => {
+        setTasks(tasks.filter(task => task.id !== taskId));
+    };
+
+    return (
+        <div>
+            <h1>ToDo List</h1>
+            <div>
+                <input
+                    type="text"
+                    placeholder="Введите задачу"
+                    value={taskText}
+                    onChange={handleChange}
+                />
+                <button onClick={handleAddTask}>Add</button>
+            </div>
+            <div>
+                {tasks.map(task => (
+                    <div key={task.id}>
+                        <span>{task.text}</span>
+                        <button onClick={() => handleDeleteTask(task.id)}>Удалить</button>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
 }
 
-export default App
+export default App;
